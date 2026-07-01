@@ -3,44 +3,36 @@
  * READZ
  * Library Module
  * ==========================================================
- *
- * Este módulo se encarga de:
- *
- * - Importar EPUBs.
- * - Crear objetos Book.
- * - Administrar la biblioteca en memoria.
- * - Actualizar la interfaz.
- *
- * Más adelante también:
- *
- * - IndexedDB
- * - Eliminar libros
- * - Ordenar biblioteca
- * - Buscar
- * - Sincronizar progreso
- *
  */
 
-const library = [];
-
-/* ==========================================================
-   Public API
-   ========================================================== */
+import * as Database from "./database.js";
+import { confirmDialog, toast } from "./ui.js";
+import { blobToDataUrl } from "./utils.js";
+import { PUBLIC_LIBRARY_URL } from "./constants.js";
 
 let onReadNow = null;
+
+/* ==========================================================
+   Init
+   ========================================================== */
 
 export function initializeLibrary() {
 
     const importButton = document.getElementById("import-book-button");
     const epubInput = document.getElementById("epub-input");
 
-    importButton.addEventListener("click", () => {
-
-        epubInput.click();
-
-    });
+    importButton.addEventListener("click", () => epubInput.click());
 
     epubInput.addEventListener("change", handleBookSelection);
+
+    document.querySelectorAll(".explore-link").forEach((button) => {
+        button.addEventListener("click", () => {
+            document.getElementById("public-library-grid")?.scrollIntoView({ behavior: "smooth" });
+        });
+    });
+
+    renderLibrary();
+    renderPublicLibrary();
 
 }
 
@@ -52,227 +44,188 @@ async function handleBookSelection(event) {
 
     const file = event.target.files[0];
 
-    if (!file) {
+    if (!file) return;
 
-        return;
+    const importButton = document.getElementById("import-book-button");
+
+    importButton.disabled = true;
+    importButton.textContent = "Importando...";
+
+    try {
+
+        const buffer = await file.arrayBuffer();
+
+        const book = await createBookFromBuffer(buffer, file.name);
+
+        await Database.saveBook(book);
+
+        renderLibrary();
+
+        showImportSuccess(book);
+
+    } catch (error) {
+
+        console.error("Error al importar EPUB:", error);
+
+        toast("No se pudo importar el archivo");
+
+    } finally {
+
+        importButton.disabled = false;
+        importButton.textContent = "Importar EPUB";
+
+        event.target.value = "";
 
     }
 
-    console.log("📚 Libro seleccionado:", file.name);
+}
 
-    const buffer = await file.arrayBuffer();
+/**
+ * Parsea el buffer con epub.js, extrae metadata y portada,
+ * y arma el objeto Book que se guarda en IndexedDB.
+ */
+async function createBookFromBuffer(buffer, fallbackName) {
 
-    const epub = ePub(buffer);
+    const epub = ePub(buffer.slice(0));
+
+    await epub.ready;
 
     const metadata = await epub.loaded.metadata;
 
-    const newBook = createBook({
+    let cover = null;
 
-        title: metadata.title,
+    try {
 
-        author: metadata.creator,
+        const coverPath = await epub.coverUrl();
 
-        buffer,
+        if (coverPath) {
+            const response = await fetch(coverPath);
+            const blob = await response.blob();
+            cover = await blobToDataUrl(blob);
+        }
 
-        epub
-
-    });
-
-    addBook(newBook);
-
-    renderLibrary();
-
-    event.target.value = "";
-
-}
-
-/* ==========================================================
-   Book Factory
-   ========================================================== */
-
-function createBook({
-
-    title,
-
-    author,
-
-    buffer,
-
-    epub
-
-}) {
+    } catch (error) {
+        // No todos los EPUBs traen portada.
+    }
 
     return {
-
         id: crypto.randomUUID(),
-
-        title: title || "Sin título",
-
-        author: author || "Autor desconocido",
-
-        cover: null,
-
-        progress: 0,
-
-        currentLocation: null,
-
-        addedAt: Date.now(),
-
-        lastOpened: null,
-
+        title: metadata.title || fallbackName.replace(/\.epub$/i, ""),
+        author: metadata.creator || "Autor desconocido",
+        cover,
         buffer,
-
-        epub
-
+        progress: 0,
+        currentLocation: null,
+        bookmarks: [],
+        notes: [],
+        highlights: [],
+        addedAt: Date.now(),
+        lastOpened: null,
+        finishedAt: null,
+        readingTimeSeconds: 0,
     };
 
 }
 
 /* ==========================================================
-   Library
+   Render — Mi biblioteca
    ========================================================== */
 
-function addBook(book) {
+export async function renderLibrary() {
 
-    library.push(book);
-
-    console.log("Biblioteca:", library);
-
-}
-
-function getBooks() {
-
-    return library;
-
-}
-
-/* ==========================================================
-   Render
-   ========================================================== */
-
-function renderLibrary() {
-
-    const books = getBooks();
+    const books = await Database.getAllBooks();
 
     const emptyLibrary = document.getElementById("empty-library");
-
     const libraryGrid = document.getElementById("library-grid");
 
-    if (!emptyLibrary || !libraryGrid) {
-
-        return;
-
-    }
+    if (!emptyLibrary || !libraryGrid) return;
 
     if (books.length === 0) {
-
         emptyLibrary.hidden = false;
-
         libraryGrid.hidden = true;
-
         return;
-
     }
 
     emptyLibrary.hidden = true;
-
     libraryGrid.hidden = false;
 
     libraryGrid.innerHTML = "";
 
-    books.forEach(book => {
-
-        libraryGrid.appendChild(
-
-            createBookCard(book)
-
-        );
-
-    });
+    books
+        .sort((a, b) => b.addedAt - a.addedAt)
+        .forEach((book) => libraryGrid.appendChild(createBookCard(book)));
 
 }
-
-   Book Card
-   ========================================================== */
 
 function createBookCard(book) {
 
     const article = document.createElement("article");
-
     article.className = "book-card";
-
     article.dataset.id = book.id;
 
-    /* =======================
-       Cover
-       ======================= */
-
     const cover = document.createElement("div");
-
     cover.className = "book-cover";
 
     if (book.cover) {
 
         const image = document.createElement("img");
-
         image.src = book.cover;
-
         image.alt = book.title;
-
         cover.appendChild(image);
 
     } else {
 
         const icon = document.createElement("div");
-
         icon.className = "book-cover-placeholder";
-
         icon.textContent = "📖";
-
         cover.appendChild(icon);
 
     }
 
-    /* =======================
-       Info
-       ======================= */
-
     const info = document.createElement("div");
-
     info.className = "book-info";
 
     const title = document.createElement("h3");
-
     title.className = "book-title";
-
     title.textContent = book.title;
 
     const author = document.createElement("p");
-
     author.className = "book-author";
-
     author.textContent = book.author;
 
-    info.appendChild(title);
+    const progress = document.createElement("p");
+    progress.className = "book-progress";
+    progress.textContent = book.finishedAt ? "Terminado" : `${Math.round((book.progress || 0) * 100)}%`;
 
-    info.appendChild(author);
+    const removeButton = document.createElement("button");
+    removeButton.className = "button-link book-remove";
+    removeButton.textContent = "Eliminar";
 
-    article.appendChild(cover);
+    removeButton.addEventListener("click", async (event) => {
 
-    article.appendChild(info);
+        event.stopPropagation();
 
-    article.addEventListener("click", () => {
+        const confirmed = await confirmDialog(`¿Eliminar "${book.title}" de tu biblioteca?`);
 
-        showImportSuccess(book);
+        if (confirmed) {
+            await Database.deleteBook(book.id);
+            renderLibrary();
+        }
 
     });
+
+    info.append(title, author, progress, removeButton);
+
+    article.append(cover, info);
+
+    article.addEventListener("click", () => requestOpenBook(book));
 
     return article;
 
 }
 
 /* ==========================================================
-   Import Success
+   Import success notification
    ========================================================== */
 
 function showImportSuccess(book) {
@@ -280,175 +233,156 @@ function showImportSuccess(book) {
     removeImportNotification();
 
     const notification = document.createElement("div");
-
     notification.id = "import-notification";
 
     notification.innerHTML = `
-
         <div class="import-notification-content">
-
-            <div class="import-notification-icon">
-
-                📚
-
-            </div>
-
+            <div class="import-notification-icon">📚</div>
             <div class="import-notification-text">
-
                 <h3>${book.title}</h3>
-
-                <p>
-
-                    Agregado correctamente a tu biblioteca.
-
-                </p>
-
+                <p>Agregado correctamente a tu biblioteca.</p>
             </div>
-
             <div class="import-notification-actions">
-
-                <button
-                    id="read-now-button"
-                    class="button-primary">
-
-                    Leer ahora
-
-                </button>
-
-                <button
-                    id="close-notification-button"
-                    class="button-link">
-
-                    Ver biblioteca
-
-                </button>
-
+                <button id="read-now-button" class="button-primary">Leer ahora</button>
+                <button id="close-notification-button" class="button-link">Ver biblioteca</button>
             </div>
-
         </div>
-
     `;
 
     document.body.appendChild(notification);
 
-    const readNowButton =
-        notification.querySelector("#read-now-button");
-
-    const closeButton =
-        notification.querySelector("#close-notification-button");
-
-    readNowButton.addEventListener("click", () => {
-
-    requestOpenBook(book);
-
-    removeImportNotification();
-
-});
-
-    closeButton.addEventListener("click", () => {
-
+    notification.querySelector("#read-now-button").addEventListener("click", () => {
+        requestOpenBook(book);
         removeImportNotification();
+    });
 
+    notification.querySelector("#close-notification-button").addEventListener("click", () => {
+        removeImportNotification();
     });
 
 }
 
-   Notification
-   ========================================================== */
-
 function removeImportNotification() {
 
-    const notification = document.getElementById(
+    const notification = document.getElementById("import-notification");
 
-        "import-notification"
-
-    );
-
-    if (!notification) {
-
-        return;
-
-    }
-
-    notification.remove();
+    if (notification) notification.remove();
 
 }
 
 /* ==========================================================
-   Reader
+   Nuestra biblioteca (dominio público)
+   ========================================================== */
+
+async function renderPublicLibrary() {
+
+    const grid = document.getElementById("public-library-grid");
+
+    if (!grid) return;
+
+    try {
+
+        const response = await fetch(PUBLIC_LIBRARY_URL);
+
+        if (!response.ok) return;
+
+        const publicBooks = await response.json();
+
+        grid.innerHTML = "";
+
+        publicBooks.forEach((book) => grid.appendChild(createPublicBookCard(book)));
+
+    } catch (error) {
+        // Si todavía no existe data/library.json, no rompemos la app.
+    }
+
+}
+
+function createPublicBookCard(book) {
+
+    const article = document.createElement("article");
+    article.className = "book-card";
+
+    const cover = document.createElement("div");
+    cover.className = "book-cover";
+
+    if (book.cover) {
+        const image = document.createElement("img");
+        image.src = book.cover;
+        image.alt = book.title;
+        cover.appendChild(image);
+    }
+
+    const info = document.createElement("div");
+    info.className = "book-info";
+
+    const title = document.createElement("h3");
+    title.className = "book-title";
+    title.textContent = book.title;
+
+    const author = document.createElement("p");
+    author.className = "book-author";
+    author.textContent = book.author;
+
+    const addButton = document.createElement("button");
+    addButton.className = "button-primary";
+    addButton.textContent = "Agregar a mi biblioteca";
+
+    addButton.addEventListener("click", async () => {
+
+        addButton.disabled = true;
+        addButton.textContent = "Agregando...";
+
+        try {
+
+            const response = await fetch(book.url);
+            const buffer = await response.arrayBuffer();
+
+            const record = await createBookFromBuffer(buffer, book.title);
+
+            record.title = book.title;
+            record.author = book.author;
+
+            await Database.saveBook(record);
+
+            toast(`"${book.title}" agregado a tu biblioteca`);
+
+            renderLibrary();
+
+        } catch (error) {
+
+            console.error("Error al agregar libro público:", error);
+
+            toast("No se pudo agregar el libro");
+
+        } finally {
+
+            addButton.disabled = false;
+            addButton.textContent = "Agregar a mi biblioteca";
+
+        }
+
+    });
+
+    info.append(title, author, addButton);
+    article.append(cover, info);
+
+    return article;
+
+}
+
+/* ==========================================================
+   Reader hook
    ========================================================== */
 
 function requestOpenBook(book) {
 
     if (typeof onReadNow === "function") {
-
         onReadNow(book);
-
     }
 
 }
-/* ==========================================================
-   Helpers
-   ========================================================== */
-
-export function findBook(id) {
-
-    return library.find(book => book.id === id);
-
-}
-
-export function getLibrary() {
-
-    return [...library];
-
-}
-
-export function hasBooks() {
-
-    return library.length > 0;
-
-}
-
-export function getBookCount() {
-
-    return library.length;
-
-}
-
-export function clearLibrary() {
-
-    library.length = 0;
-
-    renderLibrary();
-
-}
-
-/* ==========================================================
-   Init
-   ========================================================== */
-
-/*
- * Cuando en el futuro carguemos la biblioteca
- * desde IndexedDB, simplemente llamaremos:
- *
- * renderLibrary();
- *
- * y automáticamente mostrará:
- *
- * - Estado vacío
- * o
- * - Biblioteca
- *
- */
-
-export {
-
-    renderLibrary
-
-};
 
 export function setReadNowHandler(callback) {
-
     onReadNow = callback;
-
 }

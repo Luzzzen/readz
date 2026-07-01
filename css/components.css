@@ -81,6 +81,8 @@
 
     padding: var(--space-md);
 
+    cursor: pointer;
+
     transition:
         transform var(--transition-normal),
         box-shadow var(--transition-normal);
@@ -90,6 +92,8 @@
 .book-card:hover {
 
     transform: translateY(-3px);
+
+    box-shadow: var(--shadow-sm);
 
 }
 
@@ -108,6 +112,28 @@
     background: #d8d0c5;
 
     margin-bottom: var(--space-md);
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+}
+
+.book-cover img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+}
+
+.book-cover-placeholder {
+
+    font-size: 2rem;
 
 }
 
@@ -141,6 +167,22 @@
 
     font-size: .85rem;
 
+}
+
+.book-remove {
+
+    margin-top: .5rem;
+
+    font-size: .8rem;
+
+    opacity: 0;
+
+    transition: opacity var(--transition-fast);
+
+}
+
+.book-card:hover .book-remove {
+    opacity: 1;
 }
 
 /* ==========================================================
@@ -195,4 +237,176 @@
 
     color: var(--color-text);
 
+}
+
+/* ==========================================================
+   Icon Button
+   ========================================================== */
+
+.icon-button {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
+
+    width: 2.4rem;
+    height: 2.4rem;
+
+    border: none;
+
+    border-radius: var(--radius);
+
+    background: transparent;
+
+    color: var(--color-text);
+
+    cursor: pointer;
+
+    font-size: 1rem;
+
+    transition: background var(--transition-fast);
+
+}
+
+.icon-button:hover {
+    background: var(--color-border);
+}
+
+/* ==========================================================
+   Import notification
+   ========================================================== */
+
+#import-notification {
+
+    position: fixed;
+
+    bottom: var(--space-lg);
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    background: var(--color-surface);
+
+    border: 1px solid var(--color-border);
+
+    border-radius: var(--radius);
+
+    box-shadow: var(--shadow-md);
+
+    padding: var(--space-md) var(--space-lg);
+
+    z-index: 200;
+
+}
+
+.import-notification-content {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: var(--space-md);
+
+}
+
+.import-notification-icon {
+    font-size: 1.6rem;
+}
+
+.import-notification-actions {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: .3rem;
+
+}
+
+/* ==========================================================
+   Modal
+   ========================================================== */
+
+.modal-overlay {
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, .4);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: var(--space-lg);
+
+    z-index: 100;
+
+}
+
+.modal-box {
+
+    width: 100%;
+    max-width: 380px;
+
+    background: var(--color-surface);
+
+    border-radius: var(--radius);
+
+    padding: var(--space-lg);
+
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-lg);
+
+}
+
+.modal-actions {
+
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: var(--space-md);
+
+}
+
+/* ==========================================================
+   Toast
+   ========================================================== */
+
+.toast {
+
+    position: fixed;
+
+    bottom: var(--space-lg);
+    left: 50%;
+
+    transform: translate(-50%, 1rem);
+
+    background: var(--color-primary);
+
+    color: white;
+
+    padding: .8rem 1.2rem;
+
+    border-radius: var(--radius);
+
+    font-size: .9rem;
+
+    opacity: 0;
+
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+
+    z-index: 200;
+
+    pointer-events: none;
+
+}
+
+.toast.visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
 }

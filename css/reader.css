@@ -5,22 +5,225 @@
 
 #reader-view {
 
-    display: flex;
+    position: relative;
 
-    justify-content: center;
+    min-height: 100vh;
 
-    align-items: center;
-
-    padding: var(--space-xl);
+    background: var(--color-background);
 
 }
 
-.reader-content {
+/* ==========================================================
+   Toolbar / Footer
+   ========================================================== */
+
+#reader-toolbar,
+#reader-footer {
+
+    position: fixed;
+    left: 0;
+    right: 0;
+
+    display: flex;
+
+    align-items: center;
+
+    padding: var(--space-md) var(--space-lg);
+
+    background: var(--color-surface);
+
+    opacity: 0;
+
+    transition: opacity var(--transition-normal), transform var(--transition-normal);
+
+    z-index: 10;
+
+}
+
+#reader-toolbar {
+
+    top: 0;
+
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--color-border);
+
+    transform: translateY(-100%);
+
+}
+
+#reader-toolbar h2 {
+
+    font-size: 1rem;
+
+    font-weight: 500;
+
+    max-width: 60%;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+
+#reader-footer {
+
+    bottom: 0;
+
+    justify-content: center;
+
+    border-top: 1px solid var(--color-border);
+
+    transform: translateY(100%);
+
+    font-size: .85rem;
+
+    color: var(--color-text-muted);
+
+}
+
+#reader-view.controls-visible #reader-toolbar,
+#reader-view.controls-visible #reader-footer {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ==========================================================
+   Viewer
+   ========================================================== */
+
+#reader-container {
 
     width: 100%;
-
     max-width: var(--reader-width);
 
-    min-height: 80vh;
+    margin: 0 auto;
 
+    padding-top: 4rem;
+
+}
+
+#viewer {
+    width: 100%;
+    height: calc(100vh - 4rem);
+}
+
+/* ==========================================================
+   Navigation zones
+   ========================================================== */
+
+.nav-zone {
+
+    position: fixed;
+    top: 0;
+    bottom: 0;
+
+    width: 15%;
+
+    z-index: 5;
+
+    cursor: pointer;
+
+}
+
+#nav-prev {
+    left: 0;
+}
+
+#nav-next {
+    right: 0;
+}
+
+/* ==========================================================
+   Settings panel
+   ========================================================== */
+
+#settings-panel {
+
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    width: 300px;
+    max-width: 85vw;
+
+    background: var(--color-surface);
+
+    border-left: 1px solid var(--color-border);
+
+    padding: var(--space-lg);
+
+    display: flex;
+    flex-direction: column;
+
+    gap: var(--space-lg);
+
+    overflow-y: auto;
+
+    z-index: 20;
+
+    box-shadow: var(--shadow-md);
+
+}
+
+#settings-panel h3 {
+
+    font-size: .8rem;
+
+    text-transform: uppercase;
+
+    letter-spacing: .04em;
+
+    color: var(--color-text-muted);
+
+    margin-bottom: var(--space-sm);
+
+}
+
+.theme-options {
+
+    display: flex;
+
+    gap: var(--space-sm);
+
+}
+
+.theme-swatch {
+
+    flex: 1;
+
+    height: 2.5rem;
+
+    border-radius: var(--radius);
+
+    border: 2px solid var(--color-border);
+
+    cursor: pointer;
+
+}
+
+.theme-swatch.active {
+    border-color: var(--color-primary);
+}
+
+.theme-swatch[data-theme="sepia"] { background: #f5f1e8; }
+.theme-swatch[data-theme="light"] { background: #fafafa; }
+.theme-swatch[data-theme="dark"] { background: #171717; }
+
+.font-size-control {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: var(--space-sm);
+
+}
+
+.font-size-control span {
+    min-width: 3.5rem;
+    text-align: center;
 }
