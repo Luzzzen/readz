@@ -1,0 +1,26 @@
+/* ==========================================================
+   READZ
+   Reader
+   ========================================================== */
+
+#reader-view {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    padding: var(--space-xl);
+
+}
+
+.reader-content {
+
+    width: 100%;
+
+    max-width: var(--reader-width);
+
+    min-height: 80vh;
+
+}
