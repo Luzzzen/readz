@@ -4,10 +4,15 @@
    ========================================================== */
 
 /* ==========================================================
-   Buttons
+   Primary Button
    ========================================================== */
 
-button {
+.button-primary {
+
+    display: inline-flex;
+
+    align-items: center;
+    justify-content: center;
 
     border: none;
 
@@ -19,23 +24,30 @@ button {
 
     padding: .9rem 1.4rem;
 
-    transition: var(--transition-fast);
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background var(--transition-fast),
+        transform var(--transition-fast),
+        opacity var(--transition-fast);
 
 }
 
-button:hover {
+.button-primary:hover {
 
     opacity: .92;
 
 }
 
-button:active {
+.button-primary:active {
 
     transform: scale(.98);
 
 }
 
-button:focus-visible {
+.button-primary:focus-visible {
 
     outline: 2px solid var(--color-text);
 
@@ -43,11 +55,23 @@ button:focus-visible {
 
 }
 
+.button-primary:disabled {
+
+    opacity: .5;
+
+    cursor: default;
+
+}
+
 /* ==========================================================
-   Cards
+   Book Card
    ========================================================== */
 
 .book-card {
+
+    display: flex;
+
+    flex-direction: column;
 
     background: var(--color-surface);
 
@@ -57,7 +81,9 @@ button:focus-visible {
 
     padding: var(--space-md);
 
-    transition: var(--transition-normal);
+    transition:
+        transform var(--transition-normal),
+        box-shadow var(--transition-normal);
 
 }
 
@@ -68,14 +94,14 @@ button:focus-visible {
 }
 
 /* ==========================================================
-   Cover
+   Book Cover
    ========================================================== */
 
 .book-cover {
 
-    aspect-ratio: 2 / 3;
-
     width: 100%;
+
+    aspect-ratio: 2 / 3;
 
     border-radius: 8px;
 
@@ -86,7 +112,7 @@ button:focus-visible {
 }
 
 /* ==========================================================
-   Book Info
+   Book Information
    ========================================================== */
 
 .book-title {
@@ -107,17 +133,13 @@ button:focus-visible {
 
 }
 
-/* ==========================================================
-   Progress
-   ========================================================== */
-
 .book-progress {
 
     margin-top: var(--space-md);
 
-    font-size: .85rem;
-
     color: var(--color-text-muted);
+
+    font-size: .85rem;
 
 }
 
