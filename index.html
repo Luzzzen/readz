@@ -25,99 +25,89 @@
 
     <main id="library-view">
 
-        <header class="app-header">
+    <header class="app-header">
 
-            <h1 class="app-title">
-                Readz
-            </h1>
+        <h1 class="app-title">
+            Readz
+        </h1>
 
-        </header>
+    </header>
 
-        <section id="hero">
+    <section id="hero">
+
+        <h2>
+            Toda biblioteca empieza con un libro.
+        </h2>
+
+        <p>
+            Importá un archivo EPUB y empezá a leer en segundos.
+        </p>
+
+        <button
+            id="import-book-button"
+            class="button-primary">
+
+            Importar EPUB
+
+        </button>
+
+    </section>
+
+    <section class="library-section">
+
+        <div class="section-header">
 
             <h2>
-                Toda biblioteca empieza con un libro.
+                Mi biblioteca
             </h2>
 
+        </div>
+
+        <div class="empty-library">
+
+            <div class="empty-library-icon">
+                📚
+            </div>
+
+            <h3>
+                Todavía no agregaste ningún libro.
+            </h3>
+
             <p>
-                Importá un archivo EPUB y empezá a leer en segundos.
+
+                Importá un EPUB o explorá nuestra biblioteca para comenzar.
+
             </p>
 
-            <button
-                id="import-book-button"
-                class="button-primary">
+        </div>
 
-                Importar EPUB
+    </section>
+
+    <section class="library-section">
+
+        <div class="section-header">
+
+            <h2>
+                Nuestra biblioteca
+            </h2>
+
+            <button class="button-link">
+
+                Explorar →
 
             </button>
 
-        </section>
+        </div>
 
-        <section class="library-section">
+        <p class="section-description">
 
-            <div class="section-header">
+            Descubrí clásicos gratuitos de dominio público para agregar a tu biblioteca.
 
-                <h2>
-                    Continuar leyendo
-                </h2>
+        </p>
 
-            </div>
+    </section>
 
-            <div class="empty-reading">
-
-                Todavía no tenés ninguna lectura en progreso.
-
-            </div>
-
-        </section>
-
-        <section class="library-section">
-
-            <div class="section-header">
-
-                <h2>
-                    Mi biblioteca
-                </h2>
-
-            </div>
-
-            <div id="library-grid">
-
-                <div class="book-placeholder"></div>
-
-                <div class="book-placeholder"></div>
-
-                <div class="book-placeholder"></div>
-
-            </div>
-
-        </section>
-
-        <section class="library-section">
-
-            <div class="section-header">
-
-                <h2>
-                    Nuestra biblioteca
-                </h2>
-
-                <button class="button-link">
-
-                    Explorar →
-
-                </button>
-
-            </div>
-
-            <p class="section-description">
-
-                Descubrí clásicos gratuitos para agregar a tu biblioteca.
-
-            </p>
-
-        </section>
-
-    </main>
+</main>
 
     <main id="reader-view" hidden></main>
 
