@@ -1,7 +1,12 @@
 import { initializeUI } from "./ui.js";
+import { initializeLibrary } from "./library.js";
 
 document.addEventListener("DOMContentLoaded", () => {
+
     initializeUI();
 
-    console.log("📚 Readz iniciado correctamente.");
+    initializeLibrary();
+
+    console.log("📚 Readz iniciado.");
+
 });
