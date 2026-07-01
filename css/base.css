@@ -99,8 +99,8 @@ select {
     font: inherit;
 }
 
-button {
-    cursor: pointer;
+button:disabled {
+    cursor: default;
 }
 
 a {
