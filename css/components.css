@@ -158,3 +158,41 @@
     border-radius: var(--radius);
 
 }
+
+/* ==========================================================
+   Link Button
+   ========================================================== */
+
+.button-link {
+
+    padding: 0;
+
+    border: none;
+
+    background: none;
+
+    color: var(--color-text-muted);
+
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: color .2s ease, transform .2s ease;
+
+}
+
+.button-link:hover {
+
+    color: var(--color-text);
+
+    transform: translateX(2px);
+
+}
+
+.button-link:focus-visible {
+
+    outline: none;
+
+    color: var(--color-text);
+
+}
