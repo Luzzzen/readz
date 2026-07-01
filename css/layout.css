@@ -3,102 +3,65 @@
    Layout
    ========================================================== */
 
-/* ==========================================================
-   App
-   ========================================================== */
-
 #app {
-    width: 100%;
     min-height: 100vh;
 }
-
-/* ==========================================================
-   Views
-   ========================================================== */
-
-#library-view,
-#reader-view {
-    width: 100%;
-    min-height: 100vh;
-}
-
-/* ==========================================================
-   Library
-   ========================================================== */
 
 #library-view {
-
-    max-width: var(--content-width);
-
+    width: min(1100px, calc(100% - 2rem));
     margin: 0 auto;
+    padding: 2rem 0 4rem;
+}
 
-    padding: var(--space-xl);
-
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-xl);
-
+#reader-view {
+    min-height: 100vh;
 }
 
 /* ==========================================================
    Header
    ========================================================== */
 
-header {
-
+.app-header {
     display: flex;
-
     justify-content: space-between;
     align-items: center;
 
+    margin-bottom: 4rem;
 }
 
-header h1 {
-
-    font-size: 2rem;
-
-}
-
-/* ==========================================================
-   Welcome
-   ========================================================== */
-
-#welcome {
-
-    display: flex;
-
-    flex-direction: column;
-
-    gap: var(--space-md);
-
+.app-title {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.05em;
 }
 
 /* ==========================================================
    Sections
    ========================================================== */
 
-#my-library,
-#public-library {
+.library-section {
+    margin-top: 4rem;
+}
 
+.section-header {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    flex-direction: column;
+    margin-bottom: 1.5rem;
+}
 
-    gap: var(--space-lg);
-
+.section-header h2 {
+    font-size: 1.25rem;
 }
 
 /* ==========================================================
-   Library Grid
+   Grids
    ========================================================== */
 
 #library-grid,
 #public-library-grid {
-
     display: grid;
-
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-
-    gap: var(--space-lg);
-
+    gap: 1.5rem;
 }
