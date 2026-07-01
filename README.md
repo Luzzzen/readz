@@ -33,13 +33,6 @@ Readz es una aplicación independiente.
 
 Puede leer cualquier archivo EPUB.
 
-```
-Stories
-    │
-    ▼
- Readz
-```
-
 ---
 
 # Principios
