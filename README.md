@@ -1,0 +1,2 @@
+# readz
+Lector EPUB
