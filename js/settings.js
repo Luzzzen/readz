@@ -12,14 +12,16 @@ let currentTheme = DEFAULT_SETTINGS.theme;
 let currentFontSize = DEFAULT_SETTINGS.fontSize;
 
 let onFontSizeChange = null;
+let onThemeChange = null;
 
 /* ==========================================================
    Init
    ========================================================== */
 
-export async function initializeSettings({ onFontSize } = {}) {
+export async function initializeSettings({ onFontSize, onTheme } = {}) {
 
     onFontSizeChange = onFontSize || null;
+    onThemeChange = onTheme || null;
 
     currentTheme = await Database.getSetting("theme", DEFAULT_SETTINGS.theme);
     currentFontSize = await Database.getSetting("fontSize", DEFAULT_SETTINGS.fontSize);
@@ -86,6 +88,10 @@ async function setTheme(theme) {
 
     await Database.setSetting("theme", theme);
 
+    if (typeof onThemeChange === "function") {
+        onThemeChange(theme);
+    }
+
 }
 
 function highlightActiveTheme() {
@@ -124,4 +130,8 @@ export function togglePanel() {
 
 export function getFontSize() {
     return currentFontSize;
+}
+
+export function getTheme() {
+    return currentTheme;
 }

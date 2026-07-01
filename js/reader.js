@@ -6,10 +6,18 @@
 import * as Database from "./database.js";
 import * as Router from "./router.js";
 import * as Statistics from "./statistics.js";
-import { togglePanel, getFontSize } from "./settings.js";
+import { togglePanel, getFontSize, getTheme } from "./settings.js";
 import { renderLibrary } from "./library.js";
 
 const readerView = document.getElementById("reader-view");
+
+const supportsHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+const CONTENT_THEMES = {
+    sepia: { body: { background: "#f5f1e8 !important", color: "#2f2b26 !important" } },
+    light: { body: { background: "#ffffff !important", color: "#1f1f1f !important" } },
+    dark: { body: { background: "#171717 !important", color: "#f5f5f5 !important" } },
+};
 
 let currentBook = null;
 let epub = null;
@@ -17,6 +25,7 @@ let rendition = null;
 
 let sessionStart = null;
 let saveTimer = null;
+let hideControlsTimer = null;
 
 /* ==========================================================
    Open / close
@@ -39,11 +48,17 @@ export async function openBook(book) {
         spread: "auto",
     });
 
+    Object.entries(CONTENT_THEMES).forEach(([name, styles]) => {
+        rendition.themes.register(name, styles);
+    });
+
+    rendition.themes.select(getTheme());
     rendition.themes.fontSize(`${getFontSize()}%`);
 
     await rendition.display(book.currentLocation || undefined);
 
     bindRelocated();
+    bindControlsVisibility();
 
     startSession();
 
@@ -52,6 +67,8 @@ export async function openBook(book) {
 }
 
 export function closeReader() {
+
+    clearTimeout(hideControlsTimer);
 
     stopSession();
 
@@ -105,10 +122,6 @@ function buildReaderDOM(book) {
         nextPage();
     });
 
-    document.getElementById("reader-container").addEventListener("click", () => {
-        readerView.classList.toggle("controls-visible");
-    });
-
 }
 
 /* ==========================================================
@@ -124,11 +137,56 @@ export function prevPage() {
 }
 
 /* ==========================================================
-   Font size (llamado desde settings.js al cambiar)
+   Font size / theme (llamados desde settings.js al cambiar)
    ========================================================== */
 
 export function applyFontSize(size) {
     rendition?.themes.fontSize(`${size}%`);
+}
+
+export function applyTheme(theme) {
+    rendition?.themes.select(theme);
+}
+
+/* ==========================================================
+   Visibilidad de barras (toolbar / footer)
+   ========================================================== */
+
+function showControls() {
+    readerView.classList.add("controls-visible");
+}
+
+function hideControls() {
+    readerView.classList.remove("controls-visible");
+}
+
+function scheduleAutoHide() {
+    clearTimeout(hideControlsTimer);
+    hideControlsTimer = setTimeout(hideControls, 3000);
+}
+
+function bindControlsVisibility() {
+
+    if (supportsHover) {
+
+        // PC: se muestran al mover el mouse y se ocultan solas a los 3s de inactividad.
+        readerView.addEventListener("mousemove", () => {
+            showControls();
+            scheduleAutoHide();
+        });
+
+    } else {
+
+        // Mobile: cada toque sobre el contenido las alterna (mostrar/ocultar).
+        // Se usa el evento de epub.js porque el contenido vive en un iframe aparte
+        // y sus clics no llegan al DOM externo.
+        rendition.on("click", () => {
+            readerView.classList.toggle("controls-visible");
+            clearTimeout(hideControlsTimer);
+        });
+
+    }
+
 }
 
 /* ==========================================================
