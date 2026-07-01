@@ -8,7 +8,7 @@
 
     <title>Readz</title>
 
-    <meta name="description" content="A beautiful, distraction-free EPUB reader for the web.">
+    <meta name="description" content="A beautiful, distraction-free EPUB reader.">
 
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
@@ -21,34 +21,30 @@
 
 <body>
 
-    <!-- APP -->
-
     <div id="app">
-
-        <!-- ========================================= -->
-        <!-- LIBRARY VIEW -->
-        <!-- ========================================= -->
 
         <main id="library-view">
 
-            <header>
+            <header class="app-header">
 
                 <div>
 
-                    <h1>Readz</h1>
-
-                    <p>Leé con libertad.</p>
+                    <h1 class="app-title">
+                        Readz
+                    </h1>
 
                 </div>
 
             </header>
 
-            <section id="welcome">
+            <section id="welcome" class="hero">
 
-                <h2>Toda biblioteca empieza con un libro.</h2>
+                <h2>
+                    Toda biblioteca empieza con un libro.
+                </h2>
 
                 <p>
-                    Importá un archivo EPUB para comenzar tu biblioteca.
+                    Importá un archivo EPUB para comenzar tu biblioteca personal.
                 </p>
 
                 <button
@@ -56,20 +52,44 @@
                     class="button-primary">
 
                     Importar EPUB
-    
+
                 </button>
 
             </section>
 
-            <section id="my-library">
+            <section class="library-section">
 
-                <h2>Mi biblioteca</h2>
+                <div class="section-header">
+
+                    <h2>Continuar leyendo</h2>
+
+                </div>
+
+                <div class="empty-state">
+
+                    <p>
+                        Todavía no hay ninguna lectura en progreso.
+                    </p>
+
+                </div>
+
+            </section>
+
+            <section class="library-section">
+
+                <div class="section-header">
+
+                    <h2>Mi biblioteca</h2>
+
+                </div>
 
                 <div id="library-grid">
 
                     <div class="empty-state">
 
-                        <p>No hay libros en tu biblioteca.</p>
+                        <p>
+                            No hay libros en tu biblioteca.
+                        </p>
 
                     </div>
 
@@ -77,19 +97,29 @@
 
             </section>
 
-            <section id="public-library">
+            <section class="library-section">
 
-                <h2>Nuestra biblioteca</h2>
+                <div class="section-header">
 
-                <p>
-                    Descubrí clásicos gratuitos para agregar a tu biblioteca.
-                </p>
+                    <h2>Nuestra biblioteca</h2>
+
+                    <button class="button-link">
+
+                        Explorar →
+
+                    </button>
+
+                </div>
 
                 <div id="public-library-grid">
 
                     <div class="empty-state">
 
-                        <p>Próximamente podrás descargar clásicos gratuitos.</p>
+                        <p>
+
+                            Próximamente vas a poder descargar clásicos gratuitos.
+
+                        </p>
 
                     </div>
 
@@ -99,31 +129,13 @@
 
         </main>
 
-        <!-- ========================================= -->
-        <!-- READER VIEW -->
-        <!-- ========================================= -->
-
         <main id="reader-view" hidden>
 
-            <!-- EPUB.js renderizará aquí -->
-
         </main>
-
-        <!-- ========================================= -->
-        <!-- SETTINGS -->
-        <!-- ========================================= -->
 
         <aside id="settings-panel" hidden>
 
         </aside>
-
-        <!-- ========================================= -->
-        <!-- MODALS -->
-        <!-- ========================================= -->
-
-        <div id="modal-container">
-
-        </div>
 
     </div>
 
