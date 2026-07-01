@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Readz</title>
+
+    <meta name="description" content="A beautiful, distraction-free EPUB reader for the web.">
+
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="stylesheet" href="css/library.css">
+    <link rel="stylesheet" href="css/reader.css">
+
+</head>
+
+<body>
+
+    <!-- APP -->
+
+    <div id="app">
+
+        <!-- ========================================= -->
+        <!-- LIBRARY VIEW -->
+        <!-- ========================================= -->
+
+        <main id="library-view">
+
+            <header>
+
+                <h1>Readz</h1>
+
+            </header>
+
+            <section id="welcome">
+
+                <h2>Toda biblioteca empieza con un libro.</h2>
+
+                <p>
+                    Importá un archivo EPUB para comenzar tu biblioteca.
+                </p>
+
+                <button id="import-book-button">
+                    Agregar EPUB
+                </button>
+
+            </section>
+
+            <section id="my-library">
+
+                <h2>Mi biblioteca</h2>
+
+                <div id="library-grid">
+
+                    <!-- Tarjetas de libros -->
+
+                </div>
+
+            </section>
+
+            <section id="public-library">
+
+                <h2>Nuestra biblioteca</h2>
+
+                <p>
+                    Descubrí clásicos gratuitos para agregar a tu biblioteca.
+                </p>
+
+                <div id="public-library-grid">
+
+                    <!-- Libros públicos -->
+
+                </div>
+
+            </section>
+
+        </main>
+
+        <!-- ========================================= -->
+        <!-- READER VIEW -->
+        <!-- ========================================= -->
+
+        <main id="reader-view" hidden>
+
+            <!-- EPUB.js renderizará aquí -->
+
+        </main>
+
+        <!-- ========================================= -->
+        <!-- SETTINGS -->
+        <!-- ========================================= -->
+
+        <aside id="settings-panel" hidden>
+
+        </aside>
+
+        <!-- ========================================= -->
+        <!-- MODALS -->
+        <!-- ========================================= -->
+
+        <div id="modal-container">
+
+        </div>
+
+    </div>
+
+    <script src="js/constants.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/database.js"></script>
+    <script src="js/library.js"></script>
+    <script src="js/reader.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/statistics.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/router.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
