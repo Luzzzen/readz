@@ -115,8 +115,11 @@
 .nav-zone {
 
     position: fixed;
-    top: 0;
-    bottom: 0;
+
+    /* Deja libre la franja donde viven la toolbar y el footer,
+       así nunca compiten por el mismo click. */
+    top: 4.5rem;
+    bottom: 3.5rem;
 
     width: 15%;
 
