@@ -1,0 +1,64 @@
+/* ==========================================================
+   READZ
+   Themes
+   ========================================================== */
+
+:root {
+
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, .05);
+
+    --shadow-md: 0 8px 30px rgba(0, 0, 0, .08);
+
+}
+
+/* ===========================
+   Sepia (default)
+   =========================== */
+
+body {
+
+    background: var(--color-background);
+
+    color: var(--color-text);
+
+}
+
+/* ===========================
+   Dark
+   =========================== */
+
+body.theme-dark {
+
+    --color-background: #171717;
+
+    --color-surface: #222222;
+
+    --color-text: #f5f5f5;
+
+    --color-text-muted: #bdbdbd;
+
+    --color-primary: #e7dfd1;
+
+    --color-border: #333333;
+
+}
+
+/* ===========================
+   Light
+   =========================== */
+
+body.theme-light {
+
+    --color-background: #fafafa;
+
+    --color-surface: #ffffff;
+
+    --color-text: #1f1f1f;
+
+    --color-text-muted: #6d6d6d;
+
+    --color-primary: #222222;
+
+    --color-border: #e3e3e3;
+
+}
